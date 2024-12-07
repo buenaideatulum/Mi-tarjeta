@@ -209,9 +209,15 @@
 
         // Generar enlace compartible
         generateLinkBtn.addEventListener('click', () => {
-            // Obtener las imágenes en base64
-            const frontImageSrc = imageFront.src;
-            const backImageSrc = imageBack.src;
+            // Verificar si hay imágenes cargadas
+            if (imageFront.src.includes('placeholder') || imageBack.src.includes('placeholder')) {
+                alert('Por favor, sube imágenes para ambas caras de la tarjeta antes de generar el enlace.');
+                return;
+            }
+
+            // Escape de comillas para evitar errores de sintaxis
+            const escapedFrontSrc = imageFront.src.replace(/'/g, "\\'");
+            const escapedBackSrc = imageBack.src.replace(/'/g, "\\'");
 
             // Crear HTML para la página compartida
             const sharedPageHTML = `
@@ -274,10 +280,10 @@
     <div class="card-container">
         <div class="card" id="card">
             <div class="card-front">
-                <img src="${frontImageSrc}" alt="Cara A" class="image-placeholder">
+                <img src='${escapedFrontSrc}' alt="Cara A" class="image-placeholder">
             </div>
             <div class="card-back">
-                <img src="${backImageSrc}" alt="Cara B" class="image-placeholder">
+                <img src='${escapedBackSrc}' alt="Cara B" class="image-placeholder">
             </div>
         </div>
     </div>
@@ -295,7 +301,7 @@
             
             currentRotationX = Math.max(-45, Math.min(45, currentRotationX));
             
-            card.style.transform = \`rotateX(\${currentRotationX}deg) rotateY(\${currentRotationY}deg)\`;
+            card.style.transform = 'rotateX(' + currentRotationX + 'deg) rotateY(' + currentRotationY + 'deg)';
         }
 
         card.addEventListener('mousedown', (e) => {
@@ -345,7 +351,7 @@
         card.addEventListener('click', () => {
             card.classList.toggle('flipped');
         });
-    </script>
+    <\/script>
 </body>
 </html>
             `;
